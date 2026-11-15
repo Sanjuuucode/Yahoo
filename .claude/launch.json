@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "yfin",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "streamlit", "run", "yfin.py", "--server.headless", "true", "--server.port", "8599"],
+      "port": 8599
+    }
+  ]
+}

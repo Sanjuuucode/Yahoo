@@ -1,2 +1,6 @@
 ARCHITECTURE.md
 PRD.md
+__pycache__/
+*.pyc
+data/server_baskets/
+*.zip

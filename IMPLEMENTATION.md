@@ -177,6 +177,95 @@ As you progress through your **JoshiQuants** coursework, here is the plan of act
 
 ---
 
+### Proposal 10.1: Bulk Ticker Upload & Multi-Stock Data Downloader
+
+- **Date**: 2026-11-15
+- **Status**: ✅ Approved & Implemented
+- **Summary of Changes**:
+  1. Added **Workflow Mode** selector in sidebar: toggle seamlessly between **"Single Ticker"** and **"Bulk Ticker Upload"**.
+  2. Supported dual bulk input methods:
+     - **File Uploader**: Reads `.csv` files (detecting `Ticker`, `Symbol`, or first column) and `.txt` files.
+     - **Paste Tickers Directly**: Accepts comma, whitespace, semicolon, or newline-separated tickers with automatic deduplication.
+  3. Integrated **Animated Batch Progress Bar** displaying `[X/Total] Fetching market data for SYMBOL...`.
+  4. Implemented in-memory ZIP streaming (`zipfile` & `io.BytesIO`) delivering a clean `.zip` archive containing individual formatted CSVs for every stock without disk clutter.
+  5. Implemented merged **Master Combined CSV** with an added `Ticker` column for multi-asset quantitative modeling and backtesting.
+  6. Provided a 3-tab inspection suite for bulk runs:
+     - **Batch Status Summary**: Real-time status, row counts, date bounds, latest close, and error reasons.
+     - **Master Combined Preview**: Preview first 200 rows of merged master dataset.
+     - **Individual Stock Inspector**: Interactive zoomable Altair price chart and data grid for any stock in the batch.
+
+---
+
+### Proposal 11.1: Server-Side Basket Data Storage & Input-Based Moving Average Stock Screener
+
+- **Date**: 2026-11-15
+- **Status**: ✅ Approved & Implemented
+- **Summary of Changes**:
+  1. Implemented **Server-Side Data Storage** repository at `./data/server_baskets/` storing master CSVs and metadata JSON files directly on the server filesystem.
+  2. Built **Server Basket Ingestion & Management Engine**:
+     - Pull and persist custom baskets with customizable names (e.g., `US_Tech_Leaders`, `Nifty_Leaders`).
+     - Built-in templates for instant start (US Mega-Cap Tech, Nifty 50 Leaders) alongside custom paste and file upload.
+     - Live server status badges displaying file path, ticker count, row count, and last sync timestamp.
+     - One-click **🔄 Re-sync Server Data** to update server datasets with fresh Yahoo Finance prices.
+     - One-click **🗑️ Delete Basket** to clean up server files.
+  3. Integrated **Customizable Moving Average Screener (Input-Based)**:
+     - MA Types: `SMA (Simple)` and `EMA (Exponential)`.
+     - User inputs for **Short MA (Period 1)** and **Long MA (Period 2)** with real-time dynamic parameter recalculation.
+     - 9 Screening strategies: Price > MA1, Price > MA2, Price < MA1, Price < MA2, Golden Cross, Death Cross, Strong Uptrend (Price > MA1 > MA2), and Near Support with user-defined percentage tolerance.
+  4. Delivered **Screened Analytics & Verification Suite**:
+     - Screener summary metrics (Total in Basket, Passed Filter, Pass Rate %, Applied Filter, Strategy).
+     - Screened results table with a toggle to view only matching stocks or the complete basket.
+     - **📥 Download Screener Results (CSV)** with full MA indicators and distance percentages.
+     - **📈 Interactive Chart & MA Overlays**: Dual-line Altair overlay showing Price (blue), Short MA (amber dashed), and Long MA (purple solid) with hover tooltips.
+
+---
+
+### Proposal 12.1: Intelligent Yahoo Finance Ticker Formatter & Indian Exchange (.NS / .BO) Auto-Resolver
+
+- **Date**: 2026-11-15
+- **Status**: ✅ Approved & Implemented
+- **Summary of Changes**:
+  1. Built `format_ticker_yfin()` to format input stocks into valid Yahoo Finance ticker syntax:
+     - Automatically appends `.NS` for NSE India (or `.BO` for BSE) to bare symbols like `HDFCBANK`, `RELIANCE`, `M&M`, `BAJAJ-AUTO`.
+     - Intelligently skips double-suffixing on existing symbols (e.g. `TCS.NS` remains `TCS.NS`).
+     - Normalizes benchmark index names (`NIFTY 50` / `NIFTY` -> `^NSEI`, `BANKNIFTY` -> `^NSEBANK`, `SENSEX` -> `^BSESN`).
+  2. Enhanced `parse_tickers()`:
+     - Handles CSV files where column header is `NIFTY 50` or other index names without breaking.
+     - Supports `include_index` toggle to optionally pull the benchmark index alongside constituents.
+  3. Integrated **Exchange Suffix** dropdown (`NSE India (.NS)`, `BSE India (.BO)`, `US / Direct`) across Bulk Ticker Upload and Screener modes.
+  4. Added **Live Formatted Tickers Preview** displaying ticker badges formatted for Yahoo Finance before data fetching starts.
+
+---
+
+### Proposal 13.1: Visual Signal Markers & Condition Trigger Points on Screener Charts
+
+- **Date**: 2026-11-15
+- **Status**: ✅ Approved & Implemented
+- **Summary of Changes**:
+  1. Implemented historical condition evaluation engine across time series in the screener inspector, computing both event transitions (`trigger_series`) and state masks (`cond_series`).
+  2. Layered color-coded, shaped Altair signal markers directly on top of the Price and MA trendlines:
+     - 🟢 **Green Upward Triangles (`▲`)**: Bullish signals (Price > MA, Golden Cross, Strong Uptrend).
+     - 🔴 **Red Downward Triangles (`▼`)**: Bearish signals (Price < MA, Death Cross).
+     - 🟠 **Amber Target Dots (`●`)**: Support and pullback signals.
+  3. Integrated **Interactive Hover Tooltips** displaying Trigger Date, Condition Met, Stock Price, Short MA, Long MA, and % Distance from both MAs.
+  4. Added a real-time **Signal Summary Card** above the chart reporting total triggers in the period, total active days, and today's status (`✅ Condition Met Today` vs `❌ Condition Not Met Today`).
+  5. Added **Display Controls**: Toggle to show/hide markers and radio to switch between `Trigger Dates Only (Breakouts / Crosses)` and `All Active Matching Days`.
+
+---
+
+### Proposal 14.1: Dynamic Dark and Light Theme Switcher
+
+- **Date**: 2026-11-15
+- **Status**: ✅ Approved & Implemented
+- **Summary of Changes**:
+  1. Added a **Theme Switcher** toggle (`🌙 Dark Mode` / `☀️ Light Mode`) at the top of the sidebar with session state persistence.
+  2. Implemented dynamic CSS theming:
+     - **Dark Mode**: TradingView-inspired `#0E1117` app canvas, `#161B22` sidebar, `#1E222D` cards with slate borders, and glowing accents.
+     - **Light Mode**: Crisp `#FFFFFF` canvas, soft `#F8F9FA` sidebar, and slate `#1E293B` headings.
+  3. Integrated `apply_chart_theme()` across all Altair charts (Line, Candlestick, Volume, and Screener MA Signal Overlays), automatically styling gridlines, axis typography, and canvas backgrounds to match the selected theme.
+
+---
+
 ## 9. Proposed Changes (Pending Review)
 
 *No pending changes at this moment. All requested features are implemented and active.*
