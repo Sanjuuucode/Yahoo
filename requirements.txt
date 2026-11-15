@@ -1,0 +1,6 @@
+# Yahoo Finance Data Downloader Dependencies
+
+streamlit>=1.35.0   # Web interface, state management, and widgets
+yfinance>=0.2.38    # Market data ingestion from Yahoo Finance API
+pandas>=2.0.0       # Data manipulation, sanitization, and CSV export
+altair>=5.0.0       # Interactive financial charts (line, candlestick, volume)
